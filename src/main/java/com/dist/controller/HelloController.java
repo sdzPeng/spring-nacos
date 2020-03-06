@@ -1,10 +1,14 @@
 package com.dist.controller;
 
 import com.alibaba.nacos.api.config.annotation.NacosValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
 
 /**
  * @company: 上海数慧系统技术有限公司
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("hello")
+@Api("swaggerDemoController相关的api")
 public class HelloController {
 
     @NacosValue(value = "${useLocalCache:false}", autoRefreshed = true)
@@ -26,5 +31,22 @@ public class HelloController {
     public String sayHello() {
         System.out.println("test");
         return useLocalCache;
+    }
+
+
+    /**
+     * 多文件上传
+     * @param file 文件
+     * @return
+     */
+    @ApiOperation(value = "文件上传", notes = "文件上传支持多文件上传")
+    @PostMapping(value = "/fileUpload", headers = "content-type=multipart/form-data")
+    public Long uploadFiles(@RequestParam("file") MultipartFile[] file) {
+        for (MultipartFile multipartFile : file) {
+            System.out.println(multipartFile.getName());
+        }
+
+        return Arrays.stream(file).count();
+
     }
 }
